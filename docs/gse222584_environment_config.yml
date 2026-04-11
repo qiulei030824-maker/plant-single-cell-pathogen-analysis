@@ -1,0 +1,110 @@
+# GSE222584 水稻病毒感染单细胞RNA-seq分析环境配置
+# 生成时间: 2026-04-11
+
+## 系统环境
+- 操作系统: Linux 6.8
+- Python版本: 3.12
+- 工作目录: /data5/qiulei/onepiece
+
+## Python包依赖
+### 核心分析包
+- scanpy==1.10.0
+- anndata==0.10.0
+- pandas==2.2.0
+- numpy==1.26.0
+- scipy==1.12.0
+- matplotlib==3.8.0
+- seaborn==0.13.0
+
+### 生物信息学分析包
+- gseapy==1.0.6
+- statsmodels==0.14.0
+- scikit-learn==1.4.0
+
+### 其他工具包
+- jupyter==1.0.0
+- notebook==7.0.0
+- ipython==8.20.0
+
+## 数据文件路径
+### 输入数据
+- 原始数据: /data5/qiulei/onepiece/data/processed/gse222584/processed_data_optimized.h5ad
+- 基因映射文件: /data5/qiulei/onepiece/memory-bank/rice_gene_id_mapping.txt
+- 标记基因文件: /data5/qiulei/onepiece/memory-bank/rice_cell_type_marker_genes_dictionary.md
+- GO注释文件: /data5/qiulei/onepiece/data/annotation/RiceGenomeAnnotationRelease7/osa1_r7.all_models.GOSlim.txt.gz
+
+### 输出目录
+- 主要输出: /data5/qiulei/onepiece/results/gse222584_optimized_bestparams/
+- 日志文件: /data5/qiulei/onepiece/results/gse222584_optimized_bestparams/analysis.log
+- 报告文件: /data5/qiulei/onepiece/results/gse222584_optimized_bestparams/final_summary_report.md
+
+## 分析参数
+### 聚类参数（最佳参数）
+- resolution: 0.4
+- n_neighbors: 15
+- n_pcs: 30
+- 聚类算法: Leiden
+
+### 差异表达分析参数
+- 方法: Wilcoxon秩和检验
+- 显著性阈值: FDR < 0.05, |log2FC| > 0.5
+- 对比组:
+  - Control vs RGSV
+  - Control vs RRSV
+  - RGSV vs RRSV
+
+### 通路富集分析参数
+- 数据库: Reactome_2022
+- 本地GO注释: 使用水稻GO注释文件
+- 显著性阈值: p-value < 0.05, fold enrichment > 1.5
+
+## 脚本文件
+- 主分析脚本: /home/qiulei/Desktop/run_gse222584_optimized_fixed_bestparams.py
+- 启动脚本: /home/qiulei/Desktop/start_analysis.sh
+
+## 环境设置命令
+```bash
+# 创建conda环境
+conda create -n rice_scRNA python=3.12
+conda activate rice_scRNA
+
+# 安装核心包
+pip install scanpy==1.10.0 anndata==0.10.0 pandas==2.2.0 numpy==1.26.0
+pip install scipy==1.12.0 matplotlib==3.8.0 seaborn==0.13.0
+
+# 安装生物信息学包
+pip install gseapy==1.0.6 statsmodels==0.14.0 scikit-learn==1.4.0
+
+# 安装Jupyter
+pip install jupyter notebook ipython
+```
+
+## 运行分析
+```bash
+# 激活环境
+conda activate rice_scRNA
+
+# 运行分析脚本
+python run_gse222584_optimized_fixed_bestparams.py
+
+# 或使用启动脚本
+bash start_analysis.sh
+```
+
+## 数据下载
+分析使用的GSE222584数据可以从NCBI GEO下载：
+- GEO accession: GSE222584
+- 样本信息: 9个样本（3个对照 + 3个RGSV感染 + 3个RRSV感染）
+- 数据格式: 单细胞RNA-seq数据（10X Genomics格式）
+
+## 注意事项
+1. 确保有足够的磁盘空间（至少50GB）
+2. 分析需要至少16GB内存
+3. 建议在具有多核CPU的服务器上运行
+4. 分析时间：约2-3小时（取决于硬件配置）
+
+## 引用
+如果使用此分析流程，请引用：
+- Scanpy: Wolf et al., Genome Biology, 2018
+- GSE222584数据集: 原始研究论文
+- 水稻GO注释: Rice Genome Annotation Project Release 7
